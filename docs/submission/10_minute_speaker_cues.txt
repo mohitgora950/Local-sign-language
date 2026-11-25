@@ -1,0 +1,39 @@
+10-MINUTE SPEAKER CUES — Sign Language Translator
+View notes in PowerPoint: View → Notes. Keep PROFESSOR_MODE = True.
+
+0:00–2:00  SLIDE 1  Introduction, objectives, contribution
+  This project is a local webcam tool for people who cannot speak.
+  Camera sees a hand pose → word on screen → Windows speaks it.
+  Objectives: landmarks, custom vocabulary, anti-flicker, offline speech, viva-safe labels.
+  I built the app, rules, smoothing, speech thread, and tests.
+  Honest line: custom vocabulary, not real ASL.
+
+2:00–3:30  SLIDE 2  Background
+  Typical student work: ASL alphabet CNNs, old MediaPipe samples, cloud TTS, copied GitHub.
+  Problems: letters ≠ conversation; current MediaPipe breaks old code; flicker; no originality.
+  Why us: current Tasks API, word-level poses, local SAPI, original code.
+
+3:30–6:00  SLIDE 3  Architecture  (slowest slide)
+  Walk the five boxes: Input → Landmarks → Classify → Stabilize → Output.
+  5 fingers × 4 directions × 2 hands = 256 poses.
+  UNCERTAIN while moving. Confirm after 0.1 s. New pose interrupts speech.
+  Stack: Python 3.12, OpenCV, MediaPipe Tasks, NumPy, Windows SAPI.
+
+6:00–8:00  SLIDE 4  Results
+  Tests: synthetic 21-point hands, no webcam required.
+  Coverage ≥ 200 labels. Filtered YES/HELLO > 90% under noise.
+  Fast sequence spoken: HELLO, I LOVE YOU, YES, PEACE, HELLO.
+  Do not claim trained-model or ASL accuracy.
+
+8:00–9:30  SLIDE 5  Conclusion + future
+  Done: camera-to-speech prototype with smoothing and offline voice.
+  Next: own landmark data, PyTorch MLP + confusion matrix, UI + ONNX.
+  Thank you. Questions.
+
+If a live demo is allowed (optional, 20–30 s on slide 1 or after slide 5):
+  python scripts/sign_language_app.py
+  Show HELLO, YES, I LOVE YOU. Remove hand → speech stops. Q to quit.
+
+Print: fill [College], [Supervisor], [Roll No.] in the Word report.
+Print two HARD BOUND copies. Get supervisor signature on the certificate.
+Spiral binding will be rejected.

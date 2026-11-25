@@ -1,0 +1,162 @@
+\documentclass[a4paper,12pt,oneside]{report}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{geometry}
+\usepackage{setspace}
+\usepackage{graphicx}
+\usepackage{float}
+\usepackage{array}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{xcolor}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,positioning,shapes.geometric,fit,calc}
+\usepackage{adjustbox}
+\usepackage{microtype}
+\usepackage{xurl}
+\usepackage[nottoc]{tocbibind}
+\usepackage{hyperref}
+
+% Binding margin: extra space on the left so text is not hidden after hard-binding.
+% Top, bottom and right stay equal.
+\geometry{left=1.5in, right=1.0in, top=1.0in, bottom=1.0in}
+\setstretch{1.15}
+\emergencystretch=3em
+\graphicspath{{screenshots/}{figures/}}
+\hypersetup{colorlinks=true,linkcolor=black,citecolor=black,urlcolor=blue}
+\urlstyle{same}
+
+\newcolumntype{Y}{>{\centering\arraybackslash}X}
+\newcolumntype{L}{>{\raggedright\arraybackslash}X}
+\newcommand{\code}[1]{\path{#1}}
+
+\newcommand{\projtitle}{GestureTalk: Real-Time Sign Language Recognition, Text Conversion and Speech Generation System}
+
+\begin{document}
+
+% ===================== TITLE PAGE =====================
+\begin{titlepage}
+    \centering
+    \vspace*{0.5cm}
+
+    {\Large \textbf{\projtitle}\par}
+    \vspace{0.5cm}
+    {\large Project Report\par}
+    \vspace{0.8cm}
+
+    A report submitted for the course\par
+    \vspace{0.25cm}
+    {\large \textbf{CS4203 -- Project-II / Internship}\par}
+
+    \vspace{0.6cm}
+    {\large SEMESTER -- VII\par}
+    \vspace{0.6cm}
+
+    \IfFileExists{screenshots/iiit-manipur.png}{%
+        \includegraphics[width=3.6cm]{screenshots/iiit-manipur.png}%
+    }{%
+        {\large\textit{Indian Institute of Information Technology Senapati, Manipur}}%
+    }
+    \vspace{0.9cm}
+
+    Submitted By\par
+    \vspace{0.2cm}
+    {\Large \textbf{MOHIT GORA}}\\
+    SEMESTER -- VII\\
+    Roll No: \textbf{230101056}
+
+    \vspace{0.7cm}
+    Supervised By\par
+    \vspace{0.2cm}
+    {\Large \textbf{Dr. Sanasam Chanu Inunganbi}}
+
+    \vfill
+    {\large Department Of Computer Science And Engineering\\
+    Indian Institute of Information Technology Senapati, Manipur\\
+    Submission Date: \underline{\hspace{3cm}}}
+\end{titlepage}
+
+% ===================== DECLARATION =====================
+\chapter*{Declaration}
+In this submission, I have expressed my idea in my own words, and I have adequately cited and referenced any ideas or words that were taken from another source. I also declare that I adhere to all principles of academic honesty and integrity and that I have not misrepresented or falsified any ideas, data, facts, or sources in this submission. If any violation of the above is made, I understand that the institute may take disciplinary action. Such a violation may also engender disciplinary action from the sources which were not properly cited or permission not taken when needed.
+
+\vspace{1.4cm}
+\hfill
+\begin{tabular}{@{}l@{}}
+MOHIT GORA \\[0.45cm]
+230101056 \\[0.45cm]
+DATE: \underline{\hspace{3.2cm}}
+\end{tabular}
+
+\newpage
+
+% ===================== CERTIFICATE =====================
+\thispagestyle{empty}
+\begin{center}
+\IfFileExists{screenshots/iiit-manipur.png}{\includegraphics[scale=0.16]{screenshots/iiit-manipur.png}\\[0.25cm]}{}
+\begin{tabular}{l}
+Department of Computer Science and Engineering \\
+Indian Institute of Information Technology Senapati, Manipur \\
+\end{tabular}
+\end{center}
+\par\noindent\rule{\textwidth}{0.4pt}
+Dr.\ Sanasam Chanu Inunganbi
+\hfill Email: \href{mailto:inunganbi@iiitmanipur.ac.in}{inunganbi@iiitmanipur.ac.in}\\
+Assistant Professor\\[1.1cm]
+{\LARGE \textbf{\emph{To Whom It May Concern}}}\\[1.0cm]
+This is to certify that the project report entitled \textbf{``GestureTalk: Real-Time Sign Language Recognition, Text Conversion and Speech Generation System''}, submitted to the Department of Computer Science and Engineering, Indian Institute of Information Technology Senapati, Manipur, in partial fulfillment of the requirements for the award of the degree of Bachelor of Technology in Computer Science and Engineering, is a record of bona fide work carried out by \textbf{MOHIT GORA} bearing roll number \textbf{230101056} for the course \textbf{CS4203 -- Project-II / Internship}.\\[1.1cm]
+\hfill Signature of Supervisor\\[0.15cm]
+\hfill \textbf{Dr.\ Sanasam Chanu Inunganbi}\\[0.7cm]
+Signature of Examiner 1 \dotfill\\[0.3cm]
+Signature of Examiner 2 \dotfill\\[0.3cm]
+Signature of Examiner 3 \dotfill\\[0.3cm]
+Signature of Examiner 4 \dotfill
+
+\newpage
+
+% ===================== ABSTRACT =====================
+\chapter*{Abstract}
+GestureTalk is a real-time desktop system that watches one hand through a laptop webcam, converts the pose into an English word on the screen, and speaks the same word through the computer speakers. The work grew from a simple observation. In classrooms, offices and public counters, speech is treated as the default way to communicate. A person who relies on hand signs then depends on someone nearby who already understands those signs. A small local program cannot replace a full natural sign language, but it can give an immediate word and a spoken sentence when a known pose is held in front of the camera.
+
+The present implementation runs entirely on a Windows laptop. OpenCV captures a mirrored live frame. MediaPipe Tasks HandLandmarker returns twenty-one normalised landmarks. A project-specific classifier then reads finger extension, pointing direction and left or right hand, and maps the pose onto a custom vocabulary of more than five hundred everyday gestures. The recognised label is not accepted on the first noisy frame. Separate open and close thresholds, a short majority window and a hold of about one tenth of a second keep the overlay steady. Speech is generated offline by the Windows speech engine in a background thread, so a new pose can interrupt the previous utterance without freezing the camera loop.
+
+The system is a working college prototype, not a complete American or Indian Sign Language interpreter. It is meant for a live demonstration of tracking, recognition, text conversion and speech generation, and for later replacement of the rule table by a trained model. The contribution of this stage is an original, offline path from webcam to spoken word, with a large everyday vocabulary that can be shown in a viva.
+
+\newpage
+
+% ===================== ACKNOWLEDGEMENT =====================
+\chapter*{Acknowledgement}
+I express my sincere gratitude to \textbf{Dr.\ Sanasam Chanu Inunganbi} for guidance during this project. The regular discussions helped me keep the design honest: what the camera can really see, what the classifier can really decide, and what should be left for later work. I am also thankful to the Department of Computer Science and Engineering, Indian Institute of Information Technology Senapati, Manipur, for the opportunity to carry out CS4203 Project-II in this area.
+
+\tableofcontents
+\listoffigures
+\listoftables
+\newpage
+
+\chapter{Introduction}
+\input{chapters/1_Introduction}
+
+\chapter{Literature Survey}
+\input{chapters/2_Literature_Survey}
+
+\chapter{Requirement Engineering}
+\input{chapters/3_Requirement}
+
+\chapter{System Design}
+\input{chapters/4_System_Design}
+
+\chapter{Implementation}
+\input{chapters/5_Implementation}
+
+\chapter{Results and Screenshots}
+\input{chapters/6_Results}
+
+\chapter{Conclusion and Future Scope}
+\input{chapters/7_Conclusion}
+
+\nocite{*}
+\bibliography{report}
+\bibliographystyle{unsrt}
+
+\end{document}

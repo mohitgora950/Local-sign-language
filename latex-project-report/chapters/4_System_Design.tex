@@ -1,0 +1,124 @@
+\section{Introduction}
+This chapter presents the logical and structural design of GestureTalk. It describes how components interact, how data moves from the camera to speech, and how the main runtime objects are related. The design is shown through architecture, data-flow, journey, entity, use-case and sequence diagrams.
+
+\section{Architecture Overview}
+The system is a single Windows process. The main thread captures frames and classifies. A daemon thread owns the speech engine. Figure~\ref{fig:arch} shows the high-level path from the user hand to text and audio.
+
+\begin{figure}[H]
+\centering
+\begin{adjustbox}{max width=\textwidth,center}
+\input{figures/system_architecture}
+\end{adjustbox}
+\caption{System architecture of GestureTalk}
+\label{fig:arch}
+\end{figure}
+
+The capture layer uses OpenCV for the webcam, a horizontal flip and the display window \cite{opencv}. The perception layer uses MediaPipe Tasks HandLandmarker in VIDEO mode \cite{mediapipehl}. The classification layer applies geometry rules and named poses over a vocabulary of more than five hundred gestures. The temporal layer applies hysteresis and hold-to-confirm. The output layer draws the word on the frame and speaks it through interruptible Windows SAPI \cite{sapi}.
+
+\section{DFD Level 0 (Context Diagram)}
+\begin{figure}[H]
+\centering
+\begin{adjustbox}{max width=\textwidth,center}
+\input{figures/dfd0}
+\end{adjustbox}
+\caption{DFD Level 0}
+\label{fig:dfd0}
+\end{figure}
+
+At the context level, GestureTalk exchanges video with the webcam, landmark inference with the on-device model file, visual feedback with the user, and audio with the speakers. Internal processing is abstracted as a single system boundary.
+
+\section{DFD Level 1}
+\begin{figure}[H]
+\centering
+\begin{adjustbox}{max width=\textwidth,center}
+\input{figures/dfd1}
+\end{adjustbox}
+\caption{DFD Level 1}
+\label{fig:dfd1}
+\end{figure}
+
+Level~1 splits the system into capture, landmark extraction, classification, confirmation, display and speech. Each process reads a small set of stores: the current frame, the landmark buffer, recent labels, the stable word and the speech queue. Shared stores make flicker control and interruption explicit.
+
+\section{DFD Level 2 (Classification and Confirmation)}
+\begin{figure}[H]
+\centering
+\begin{adjustbox}{max width=\textwidth,center}
+\input{figures/dfd2}
+\end{adjustbox}
+\caption{DFD Level 2}
+\label{fig:dfd2}
+\end{figure}
+
+Level~2 expands classification into finger ratios, hysteresis, vocabulary lookup, majority vote and hold-to-confirm. Finger ratios are compared with separate open and close thresholds. Named rules such as thumbs-down NO and the OK pinch override the table. Disagreeing frames become uncertain and do not replace the last stable word.
+
+\section{User Journey Diagram}
+\begin{figure}[H]
+\centering
+\begin{adjustbox}{max width=\textwidth,center}
+\input{figures/user_journey_flow}
+\end{adjustbox}
+\caption{End-to-end user journey from application start to spoken word}
+\label{fig:journey}
+\end{figure}
+
+The journey starts with launching \code{scripts/sign_language_app.py}. The webcam opens, the user shows one hand, holds a pose for about 0.1 seconds, sees and hears the word, may change pose, may remove the hand, and finally presses Q to quit.
+
+\section{Entity Relationship Diagram}
+There is no MySQL schema. Figure~\ref{fig:er} models runtime objects and their relationships.
+
+\begin{figure}[H]
+\centering
+\begin{adjustbox}{max width=\textwidth,center}
+\input{figures/er_diagram}
+\end{adjustbox}
+\caption{Runtime entity relationship diagram}
+\label{fig:er}
+\end{figure}
+
+One hand result exists per detected hand, with a maximum of one hand in the current demo. The classifier owns finger hysteresis. Gesture state owns confirmation. The speech controller owns the queue and generation counter. These objects live in memory only.
+
+\section{Use Case Diagram}
+\begin{figure}[H]
+\centering
+\begin{adjustbox}{max width=\textwidth,center}
+\input{figures/use_case}
+\end{adjustbox}
+\caption{Use case diagram}
+\label{fig:usecase}
+\end{figure}
+
+The presenter shows a pose, changes pose, removes the hand and may toggle left and right correction. The developer runs synthetic tests.
+
+\section{Sequence Diagram (Stable Gesture to Speech)}
+\begin{figure}[H]
+\centering
+\begin{adjustbox}{max width=\textwidth,center}
+\input{figures/sequence_diagram}
+\end{adjustbox}
+\caption{Sequence diagram for a confirmed gesture}
+\label{fig:seq}
+\end{figure}
+
+The webcam loop sends a frame to the tracker, receives twenty-one points, asks the classifier for a word, waits for GestureState to confirm, and then asks the speech thread to speak. Audio returns to the user without blocking the next camera frame.
+
+\section{Module Design}
+The webcam loop, confirmation window, overlay and key handling live in \code{scripts/sign_language_app.py}. MediaPipe wrapping and skeleton drawing live in \code{src/signlang/hand_tracker.py}. Vocabulary, geometry and hysteresis live in \code{src/signlang/gestures.py}. Interruptible SAPI lives in \code{src/signlang/speech.py}. Synthetic landmark tests live in \code{tests/test_gestures.py}. The MediaPipe model file is stored at \code{models/hand_landmarker.task}.
+
+\begin{table}[H]
+\centering
+\small
+\caption{Source modules and responsibilities}
+\label{tab:modules}
+\begin{tabularx}{\textwidth}{@{}>{\raggedright\arraybackslash}p{3.6cm} L@{}}
+\toprule
+\textbf{Module} & \textbf{Responsibility} \\
+\midrule
+sign\_language\_app.py & Frame loop, confirm window, keys Q and H, overlay text \\
+hand\_tracker.py & VIDEO-mode landmark detection and drawing \\
+gestures.py & 500+ gesture vocabulary, named poses, handedness correction \\
+speech.py & Background thread, generation counter, SAPI purge \\
+test\_gestures.py & Synthetic coverage and noise protocol \\
+check\_env.py & Python, packages, model, webcam and TTS checks \\
+\bottomrule
+\end{tabularx}
+\end{table}

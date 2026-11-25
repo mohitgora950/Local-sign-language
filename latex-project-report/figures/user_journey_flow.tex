@@ -1,0 +1,22 @@
+\begin{tikzpicture}[
+  node distance=0.48cm,
+  box/.style={draw, thick, rounded corners, minimum width=6.0cm, minimum height=0.65cm, align=center, fill=white, font=\small},
+  arr/.style={-Stealth, thick, black}
+]
+\node[box] (a) {Start: python scripts/sign\_language\_app.py};
+\node[box, below=of a] (b) {Webcam opens; mirrored view};
+\node[box, below=of b] (c) {Show one hand; skeleton overlay};
+\node[box, below=of c] (d) {Hold pose $\approx$ 0.1 s};
+\node[box, below=of d] (e) {Word on screen + spoken once};
+\node[box, below=of e] (f) {Change pose $\rightarrow$ interrupt and speak new word};
+\node[box, below=of f] (g) {Remove hand $\geq$ 0.15 s $\rightarrow$ silence};
+\node[box, below=of g] (h) {Press Q to quit};
+
+\draw[arr] (a) -- (b);
+\draw[arr] (b) -- (c);
+\draw[arr] (c) -- (d);
+\draw[arr] (d) -- (e);
+\draw[arr] (e) -- (f);
+\draw[arr] (f) -- (g);
+\draw[arr] (g) -- (h);
+\end{tikzpicture}

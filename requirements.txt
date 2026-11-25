@@ -1,0 +1,19 @@
+# Python 3.12 recommended (numpy 2.5 needs >=3.12, pandas 3 needs >=3.11)
+# Step 0-1 (core)
+mediapipe>=1.1.0
+opencv-contrib-python        # mediapipe installs this itself; do NOT also install opencv-python
+numpy>=2.0
+# Step 2+ (uncomment when we reach that step, or just install all now)
+pandas>=3.0
+scikit-learn>=1.5
+matplotlib>=3.9
+torch>=2.5
+torchvision>=0.20
+torchinfo>=1.8              # replacement for abandoned torchsummary (last release 2018)
+pyttsx3>=2.90               # offline text-to-speech (Windows SAPI5)
+customtkinter>=5.2          # modern Tkinter UI
+Pillow>=10
+# Later steps
+# onnx
+# onnxruntime
+# grad-cam

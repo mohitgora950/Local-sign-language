@@ -1,0 +1,19 @@
+\begin{tikzpicture}[
+  node distance=1.45cm and 1.8cm,
+  ext/.style={draw, thick, minimum width=2.4cm, minimum height=0.9cm, fill=white, align=center, font=\small},
+  proc/.style={draw, thick, rounded corners, minimum width=4.0cm, minimum height=1.15cm, fill=white, align=center},
+  arr/.style={-Stealth, thick, black}
+]
+\node[proc] (sys) {GestureTalk};
+\node[ext, left=of sys] (user) {User};
+\node[ext, above=of sys] (cam) {Webcam};
+\node[ext, right=of sys] (spk) {Speakers};
+\node[ext, below=of sys] (model) {hand\_landmarker.task};
+
+\draw[arr] (user) -- node[above,font=\scriptsize]{pose} (sys);
+\draw[arr] (sys) -- node[below,font=\scriptsize]{text} (user);
+\draw[arr] (cam) -- node[right,font=\scriptsize]{frames} (sys);
+\draw[arr] (sys) -- node[above,font=\scriptsize]{audio} (spk);
+\draw[arr] (sys) -- (model);
+\draw[arr] (model) -- (sys);
+\end{tikzpicture}

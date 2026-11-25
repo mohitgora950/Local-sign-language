@@ -1,0 +1,48 @@
+\section{Technology Stack}
+The application is written in Python 3.12 or newer. OpenCV handles capture, the selfie flip and overlay drawing \cite{opencv}. MediaPipe Tasks HandLandmarker supplies twenty-one landmarks in VIDEO mode \cite{mediapipehl,mediapipehands}. NumPy is used for distances and orientation. Speech uses Windows SAPI.SpVoice through \code{pywin32} \cite{sapi}. PyTorch, scikit-learn and torchinfo are installed for later training \cite{pytorch}. CustomTkinter is reserved for a later desktop shell. Cloud speech APIs were not used, because offline operation is a requirement.
+
+MediaPipe 1.x does not include \code{mp.solutions.hands} in the wheel, so the Tasks API is mandatory on a current install \cite{mediapipehl}. OpenCV contrib is used because MediaPipe depends on it. Installing both \code{opencv-python} and \code{opencv-contrib-python} in the same environment causes conflicts, so only the contrib package is kept.
+
+\section{Development Environment}
+The project was developed on Windows using Visual Studio Code, a Python virtual environment and Git. Environment checks are automated by \code{scripts/check_env.py}. The MediaPipe model is downloaded by \code{scripts/download_models.py}. Synthetic tests do not require a webcam.
+
+\section{Tracking Implementation}
+\code{HandTracker} wraps HandLandmarker in VIDEO mode. Each BGR frame is converted to RGB, wrapped as a MediaPipe Image, and passed with a strictly increasing timestamp. Output is a list of hand results. Skeleton drawing uses the standard twenty-one connections. Isolating MediaPipe in one file means a future API change does not rewrite the application loop. The live window is mirrored with \code{cv2.flip(frame, 1)} so that raising the right hand appears on the right side of the screen.
+
+\section{Classifier Implementation}
+Five finger extension ratios are computed from landmark distances and compared with separate open and close thresholds. That hysteresis stops a fingertip sitting near a boundary from flipping the bit on every frame. Orientation is the wrist-to-middle-MCP vector, labelled UP, DOWN, LEFT or RIGHT. MediaPipe handedness is corrected in one place because the mirrored selfie view otherwise swaps left and right. The H key can toggle that correction during a demo.
+
+Finger configuration, orientation and hand side index a custom vocabulary of more than five hundred everyday gestures. Words were chosen from daily life so that a short demonstration can cover greetings, family, school, food, travel, numbers, colours and common actions. Named poses used in the viva include HELLO, I LOVE YOU, YES, thumbs-down NO, PEACE, ONE POINT, FIST, ROCK ON, CALL ME, OK, THREE and FOUR. Special rules sit above the table. A closed fist with the thumb clearly below the wrist is treated as NO. An OK pose is recognised when the thumb tip meets the index tip while the other three fingers stay extended.
+
+The classifier keeps a five-frame window. A word is emitted only if it holds at least sixty percent of that window and at least three frames have been seen. Otherwise the return value is uncertain, and the last stable overlay is left unchanged.
+
+\section{Confirmation and Speech}
+\code{GestureState} requires the candidate to remain unchanged for about 0.1 seconds. A held pose is spoken once. A different stable pose is spoken again. A stable empty or unknown state clears the last spoken word, so the same gesture can be spoken after a clear break. \code{SpeechController} starts a daemon thread, creates SAPI.SpVoice, and reads generation and word pairs from a queue. Calling \code{say()} increments the generation. Calling \code{stop()} increments it and drains the queue. The worker speaks asynchronously and purges the utterance if the generation has moved on \cite{sapi}. The camera loop never waits for speech to finish.
+
+\section{Error Handling and Validation}
+Missing webcam frames print a message and break the loop. A missing model file raises a clear error that tells the user to run the download script. Speech exceptions are logged without stopping the camera. Landmark aspect-ratio correction multiplies $x$ by frame width over height so stretched cameras do not distort distances. If no hand is present, the classifier is reset so stale finger state does not leak into the next detection.
+
+\section{Limitations}
+The classifier is a project-specific vocabulary. It is not American Sign Language or Indian Sign Language. Lighting, camera angle and two-handed signs are outside the current model. There is no held-out human dataset and no confusion matrix yet. Those limits are accepted for this stage of Project-II. They are not hidden behind a claim of language-level accuracy.
+
+\section{Technology Stack Summary}
+\begin{table}[H]
+\centering
+\small
+\caption{Technology stack}
+\label{tab:stack}
+\begin{tabularx}{\textwidth}{@{}>{\raggedright\arraybackslash}p{3.2cm} >{\raggedright\arraybackslash}p{2.6cm} L@{}}
+\toprule
+\textbf{Technology} & \textbf{Category} & \textbf{Role} \\
+\midrule
+Python 3.12+ & Language & Application, tests and geometry \\
+OpenCV \cite{opencv} & Vision & Capture, flip, overlay and window \\
+MediaPipe Tasks \cite{mediapipehl} & Perception & 21 landmarks in VIDEO mode \\
+NumPy & Numerics & Distances, orientation and noise tests \\
+Windows SAPI \cite{sapi} & Speech & Offline, interruptible TTS \\
+PyTorch \cite{pytorch} & Planned ML & Later MLP training \\
+scikit-learn & Planned ML & Metrics and person-wise split \\
+CustomTkinter & Planned UI & Later desktop shell \\
+\bottomrule
+\end{tabularx}
+\end{table}

@@ -1,0 +1,20 @@
+\begin{tikzpicture}[
+  font=\footnotesize,
+  actor/.style={draw, thick, minimum width=1.85cm, minimum height=0.5cm, align=center, fill=white},
+  arr/.style={-Stealth, thick, black}
+]
+\node[actor] (w) {Webcam};
+\node[actor, right=0.85cm of w] (t) {Tracker};
+\node[actor, right=0.85cm of t] (c) {Classifier};
+\node[actor, right=0.85cm of c] (g) {GestureState};
+\node[actor, right=0.85cm of g] (s) {Speech};
+
+\foreach \n in {w,t,c,g,s}
+  \draw[dashed] (\n.south) -- ++(0,-3.7);
+
+\draw[arr] ([yshift=-0.65cm]w.south) -- node[above,font=\scriptsize]{frame} ([yshift=-0.65cm]t.south);
+\draw[arr] ([yshift=-1.35cm]t.south) -- node[above,font=\scriptsize]{21 pts} ([yshift=-1.35cm]c.south);
+\draw[arr] ([yshift=-2.05cm]c.south) -- node[above,font=\scriptsize]{word} ([yshift=-2.05cm]g.south);
+\draw[arr] ([yshift=-2.75cm]g.south) -- node[above,font=\scriptsize]{say()} ([yshift=-2.75cm]s.south);
+\draw[arr] ([yshift=-3.4cm]s.south) -- node[below,font=\scriptsize]{audio} ++(-7.4,0);
+\end{tikzpicture}

@@ -1,0 +1,44 @@
+\section{Existing Systems}
+A large body of student and research projects treats sign recognition as image classification of the American Sign Language fingerspelling alphabet. Typical pipelines train a convolutional network on cropped hand photographs and report letter accuracy. That task is well defined, but letters are not the same as spoken words in a live conversation \cite{bragg2019}. Video models that classify full signs exist in the research literature. They need licensed datasets, substantial compute, and careful evaluation so that the same person does not appear in both training and test splits \cite{bragg2019}.
+
+Another common pattern is a webcam overlay that uses MediaPipe hand tracking and a small set of if-else rules. MediaPipe Hands provides on-device real-time tracking of twenty-one landmarks \cite{mediapipehands}. Many public samples still call the legacy \code{mp.solutions.hands} API. MediaPipe 1.x ships the Tasks API, and the older module is no longer present in the current wheel \cite{mediapipehl}. Older code therefore fails on a fresh install even when the idea of the project is sound.
+
+Some demonstrations send recognised text to a cloud speech API. That design needs a key and a network, and it is a poor fit for an offline viva. Landmark-based classification itself is a standard idea: twenty-one points are cheaper and more pose-stable than raw pixels for geometry \cite{mediapipehands}. The present project uses that idea but implements its own vocabulary, smoothing, speech threading and tests. Concept-level inspiration from public recognition repositories was noted. No source was copied.
+
+OpenCV remains the practical library for webcam capture and overlay drawing \cite{opencv}. PyTorch is the planned training stack for a later landmark multilayer perceptron \cite{pytorch}. Windows SAPI provides offline speech without a cloud vendor \cite{sapi}.
+
+\section{Identified Gaps}
+Alphabet-only convolutional models do not map to spoken phrases needed in a short live demo. Broken MediaPipe samples waste setup time and do not run on current packages. Per-frame labels flicker, and text-to-speech then repeats the same word or stutters. Blocking speech calls freeze the OpenCV loop, so the camera appears to hang. Online text-to-speech and copied repositories create honesty and deployment problems. Those gaps produce demos that either fail to install, fail to speak smoothly, or cannot be defended as original work.
+
+\section{Proposed Contribution}
+This project addresses those gaps through a unified local pipeline. MediaPipe Tasks is used as the maintained landmark API \cite{mediapipehl}. A custom vocabulary of more than five hundred gestures is indexed by finger configuration, orientation and hand side, with named overrides for everyday shapes. Per-finger hysteresis and majority vote reduce flicker. A confirmation window of about 0.1 seconds speaks a held pose once. Speech runs in a background thread with a generation counter so a new pose can cut off the previous sentence \cite{sapi}. The application, rules, smoothing, speech controller and synthetic tests were written for this project.
+
+\section{Comparative Perspective}
+Compared with alphabet CNNs, the present system trades linguistic completeness for a live, word-level demonstration that runs on a laptop CPU. Compared with raw landmark overlays, it adds explicit temporal stability and interruptible speech. Compared with cloud assistants, it stays offline. The honest comparison is therefore not better ASL accuracy. The comparison is a complete, original, current-API prototype that can be shown and explained. A trained model with person-wise evaluation remains necessary before any natural sign language claim.
+
+\section{Comparative Feature Analysis}
+Table~\ref{tab:compare} compares GestureTalk with representative existing approaches.
+
+\begin{table}[H]
+\centering
+\small
+\setlength{\tabcolsep}{4pt}
+\caption{Feature comparison of GestureTalk with existing approaches}
+\label{tab:compare}
+\begin{tabularx}{\textwidth}{@{}>{\raggedright\arraybackslash}p{2.7cm}YYYY@{}}
+\toprule
+\textbf{Feature} & \textbf{GestureTalk} & \textbf{ASL CNN} & \textbf{Legacy samples} & \textbf{Cloud TTS} \\
+\midrule
+MediaPipe Tasks API & Yes & Varies & No & Varies \\
+Word-level output & Yes & No & Partial & Partial \\
+Vocabulary size & 500+ & Letters & Small & Varies \\
+Anti-flicker smoothing & Yes & No & No & Varies \\
+Offline speech & Yes & No & No & No \\
+Interruptible TTS & Yes & No & No & No \\
+Trained ASL or ISL & Planned & Yes & No & No \\
+Original student code & Yes & Varies & Often copied & Varies \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+The table is a qualitative comparison, not a published benchmark. Accuracy numbers from alphabet papers cannot be copied onto this prototype because the tasks are different. What the table records is the set of properties that matter for a college demonstration: a current tracker, a large word list, local speech, and original application logic.

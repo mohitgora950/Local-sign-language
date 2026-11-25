@@ -1,0 +1,19 @@
+\begin{tikzpicture}[
+  node distance=0.6cm,
+  p/.style={draw, thick, rounded corners, minimum width=5.4cm, minimum height=0.68cm, align=center, fill=white, font=\small},
+  d/.style={draw, thick, minimum width=5.4cm, minimum height=0.62cm, align=center, fill=white, font=\small},
+  arr/.style={-Stealth, thick, black}
+]
+\node[p] (a) {P3.1 Compute finger ratios and orientation};
+\node[p, below=of a] (b) {P3.2 Apply open/close hysteresis};
+\node[p, below=of b] (c) {P3.3 Named rule or 500+ word vocabulary};
+\node[p, below=of c] (d) {P3.4 Majority vote; else UNCERTAIN};
+\node[p, below=of d] (e) {P3.5 Hold 0.1 s then speak once};
+\node[d, below=of e] (s) {D3 Recent labels / D4 Speech queue};
+
+\draw[arr] (a) -- (b);
+\draw[arr] (b) -- (c);
+\draw[arr] (c) -- (d);
+\draw[arr] (d) -- (e);
+\draw[arr] (e) -- (s);
+\end{tikzpicture}

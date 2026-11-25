@@ -1,0 +1,23 @@
+\begin{tikzpicture}[
+  node distance=0.75cm and 0.95cm,
+  p/.style={draw, thick, rounded corners, minimum width=3.1cm, minimum height=0.8cm, align=center, fill=white, font=\small},
+  d/.style={draw, thick, minimum width=2.5cm, minimum height=0.65cm, align=center, fill=white, font=\small},
+  arr/.style={-Stealth, thick, black}
+]
+\node[p] (p1) {P1: Frame capture};
+\node[p, below=of p1] (p2) {P2: Landmark extract};
+\node[p, below=of p2] (p3) {P3: Classify pose};
+\node[p, below=of p3] (p4) {P4: Confirm / speak};
+\node[d, right=2.2cm of p1] (d1) {D1: Frame};
+\node[d, below=of d1] (d2) {D2: Landmarks};
+\node[d, below=of d2] (d3) {D3: Recent labels};
+\node[d, below=of d3] (d4) {D4: Speech queue};
+
+\draw[arr] (p1) -- (d1);
+\draw[arr] (d1) -- (p2);
+\draw[arr] (p2) -- (d2);
+\draw[arr] (d2) -- (p3);
+\draw[arr] (p3) -- (d3);
+\draw[arr] (d3) -- (p4);
+\draw[arr] (p4) -- (d4);
+\end{tikzpicture}

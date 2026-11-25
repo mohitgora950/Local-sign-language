@@ -1,0 +1,21 @@
+\begin{tikzpicture}[
+  node distance=0.7cm and 1.2cm,
+  actor/.style={draw, thick, minimum width=2.4cm, minimum height=0.7cm, fill=white, align=center, font=\small},
+  use/.style={draw, thick, ellipse, minimum width=4.2cm, minimum height=0.8cm, fill=white, align=center, font=\small},
+  arr/.style={-Stealth, thick, black}
+]
+\node[actor] (u) {Presenter};
+\node[actor, below=2.2cm of u] (d) {Developer};
+
+\node[use, right=2.2cm of u] (u1) {Show pose / hear word};
+\node[use, below=of u1] (u2) {Change pose / interrupt};
+\node[use, below=of u2] (u3) {Remove hand / silence};
+\node[use, below=of u3] (u4) {Toggle Left/Right (H)};
+\node[use, below=of u4] (u5) {Run synthetic tests};
+
+\draw[arr] (u) -- (u1);
+\draw[arr] (u) -- (u2);
+\draw[arr] (u) -- (u3);
+\draw[arr] (u) -- (u4);
+\draw[arr] (d) -- (u5);
+\end{tikzpicture}

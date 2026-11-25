@@ -1,0 +1,14 @@
+\begin{tikzpicture}[
+  node distance=1.2cm and 1.4cm,
+  ent/.style={draw, thick, minimum width=3.0cm, minimum height=1.1cm, align=center, fill=white, font=\small},
+  arr/.style={-Stealth, thick, black}
+]
+\node[ent] (h) {HandResult\\landmarks, side, score};
+\node[ent, right=of h] (c) {GestureClassifier\\finger state, window};
+\node[ent, below=of h] (g) {GestureState\\candidate, stable};
+\node[ent, below=of c] (s) {SpeechController\\queue, generation};
+
+\draw[arr] (h) -- node[above,font=\scriptsize]{feeds} (c);
+\draw[arr] (c) -- node[right,font=\scriptsize]{detected word} (g);
+\draw[arr] (g) -- node[above,font=\scriptsize]{say / stop} (s);
+\end{tikzpicture}

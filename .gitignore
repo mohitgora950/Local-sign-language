@@ -1,0 +1,13 @@
+.venv/
+__pycache__/
+*.pyc
+.idea/
+.vscode/*.log
+# data and big model files stay out of git
+data/raw/
+data/*.npz
+data/*.csv
+models/*.task
+models/*.pth
+models/*.onnx
+*.zip

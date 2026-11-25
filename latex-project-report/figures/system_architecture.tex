@@ -1,0 +1,21 @@
+\begin{tikzpicture}[
+  node distance=1.05cm and 0.45cm,
+  box/.style={draw, thick, rounded corners, minimum width=2.15cm, minimum height=1.0cm, align=center, fill=white, font=\small},
+  arr/.style={-Stealth, thick, black}
+]
+\node[box] (user) {User\\hand pose};
+\node[box, right=of user] (cam) {Webcam\\OpenCV};
+\node[box, right=of cam] (mp) {MediaPipe\\21 landmarks};
+\node[box, right=of mp] (cls) {Rule\\classifier};
+\node[box, below=of cls] (sm) {Smoothing\\+ confirm};
+\node[box, left=of sm] (ui) {On-screen\\word};
+\node[box, left=of ui] (tts) {SAPI\\speech};
+
+\draw[arr] (user) -- (cam);
+\draw[arr] (cam) -- (mp);
+\draw[arr] (mp) -- (cls);
+\draw[arr] (cls) -- (sm);
+\draw[arr] (sm) -- (ui);
+\draw[arr] (sm) -- (tts);
+\draw[arr] (ui.west) -- ++(-0.2,0) |- (user.south);
+\end{tikzpicture}

@@ -1,0 +1,46 @@
+\section{Functional Requirements}
+The translator must open the default webcam and show a mirrored live view so that the user can place the hand as in a selfie camera. When a hand is present, the system must detect it, extract twenty-one landmarks with a confidence score, and draw the skeleton on the frame. From those landmarks it must classify a custom vocabulary of more than five hundred gestures using finger state, orientation and hand side, including named poses such as HELLO, I LOVE YOU, YES, NO, PEACE and OK.
+
+Noisy frames during motion must not overwrite the last stable word. The classifier therefore returns an uncertain state while recent frames disagree, and a candidate is confirmed only after about 0.1 seconds of stability. The stable word, finger bit pattern, orientation and corrected hand side are drawn on the window. A newly confirmed word is spoken once using offline Windows SAPI. If the pose changes, previous speech is interrupted. If the hand leaves the frame for about 0.15 seconds, speech stops. The H key toggles left and right label correction at runtime. The Q key quits and releases the camera, tracker and speech resources.
+
+\section{Non-Functional Requirements}
+Classification must keep up with webcam frames on a CPU laptop. The overlay should be large enough to read from a short distance, and the confirm delay should feel immediate rather than sluggish. Missing frames, missing hands and speech errors must not crash the loop. Tracking and speech must work without an internet connection and without an API key. Tracking, gestures and speech remain in separate modules so that later training work does not rewrite the whole application.
+
+\section{User Roles}
+This prototype is a single-user desktop tool rather than a multi-role web platform. The end user or presenter shows a hand to the camera and hears and sees the word. The developer or examiner reads logs, toggles handedness with H, and runs synthetic tests without a webcam.
+
+\section{Use Case Analysis}
+In the live recognition case, the webcam and speakers are available and the application is running. The presenter shows a hand, holds a pose, sees the word, and hears it spoken once. In the pose-change case, a previous word may still be speaking. The presenter moves to a different stable pose. Current speech is interrupted and the new word is spoken. In the hand-removal case, the presenter takes the hand away for at least 0.15 seconds. The overlay returns to ``No hand detected'' and speech stops. In the synthetic verification case, the developer runs \code{tests/test_gestures.py}. Vocabulary, named poses, noise filtering and fast sequences are checked without a camera.
+
+\section{Data Requirements}
+The runtime does not use a relational database. Transient objects are sufficient. A hand result holds twenty-one $(x,y,z)$ landmarks, raw handedness and a score. The classifier keeps five finger states, a recent word window and the last diagnostic bits. Gesture state keeps the candidate, the stable word, the last spoken word and timestamps. The speech controller keeps a generation counter and a queue of pending words. Persistent files are the MediaPipe model \code{hand_landmarker.task} and optional debug logs. Planned later data are per-person landmark CSV files for training.
+
+\section{Requirements Summary}
+Table~\ref{tab:req} lists the requirements in a form that can be checked against the implementation.
+
+\begin{table}[H]
+\centering
+\small
+\caption{GestureTalk requirements summary}
+\label{tab:req}
+\begin{tabularx}{\textwidth}{@{}l L l@{}}
+\toprule
+\textbf{Priority} & \textbf{Requirement} & \textbf{Role} \\
+\midrule
+High & Webcam capture and mirrored display & User \\
+High & 21 landmark tracking & System \\
+High & Custom classification of 500+ gestures & System \\
+High & Named pose overrides for common shapes & System \\
+High & Hysteresis and majority smoothing & System \\
+High & Hold-to-confirm and speak-once & System \\
+High & Interruptible offline speech & User \\
+High & Stop speech when the hand leaves & User \\
+Medium & Runtime handedness toggle (H) & Developer \\
+Medium & Diagnostic logging & Developer \\
+High & Webcam-free synthetic tests & Developer \\
+Medium & Resource cleanup on quit & System \\
+Low & Planned MLP training data & Future \\
+Medium & Modular packages for later UI and ONNX & System \\
+\bottomrule
+\end{tabularx}
+\end{table}

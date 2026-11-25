@@ -1,0 +1,9 @@
+\section{Conclusion}
+This report presented GestureTalk, a real-time sign language recognition, text conversion and speech generation system built as a Project-II prototype. The application reads one hand from a laptop webcam, classifies a custom vocabulary of more than five hundred gestures, shows the recognised English word on the screen, and speaks that word through the Windows speech engine without using the internet.
+
+The engineering work of this stage sits in the complete local pipeline rather than in a published accuracy number. MediaPipe Tasks supplies current landmark tracking. Geometry rules and named poses convert landmarks into words. Hysteresis, majority vote and a short confirmation window keep the overlay steady. A background speech thread lets a new pose interrupt the previous sentence. Synthetic tests cover named poses, handedness correction and noisy landmarks without a camera.
+
+The system is a working demonstration, not a full interpreter of American Sign Language or Indian Sign Language. That limit is part of the conclusion, not an afterthought. Within the chosen scope, the project shows that a student implementation can go from camera to spoken word in real time, with a large everyday vocabulary, on an ordinary Windows laptop.
+
+\section{Future Scope}
+The next natural step is to collect landmark sequences from several people and train a small multilayer perceptron, keeping a person-wise split so that evaluation does not leak the same signer into both sides. A CustomTkinter shell can then wrap the OpenCV window, a history of recognised words, and simple controls for volume and handedness. ONNX export would allow a fair FPS and latency table on CPU. Two-handed poses, motion signs and a small phrase buffer are later extensions. Those items belong to later work. They are not claimed as results of the present prototype.

@@ -1,0 +1,24 @@
+\section{Overview}
+GestureTalk is a local Python application that turns a live hand pose into on-screen English text and then into speech. The user sits in front of a webcam, shows one hand, holds a pose for a short moment, and sees a word such as HELLO, HELP or WATER on the OpenCV window. The same word is spoken by the Windows speech engine without sending audio to a cloud service. Tracking uses the current MediaPipe Tasks HandLandmarker rather than the older Hands module that many public samples still call. Classification at this stage is landmark geometry. A trained image network is planned, but it is not claimed as part of the running demo.
+
+The vocabulary built for the project contains more than five hundred gestures. Everyday words covering greetings, family, school, food, travel, numbers, colours and common actions were added so that a short viva can show several useful poses instead of a handful of letters. Named shapes such as HELLO, I LOVE YOU, YES, NO, PEACE and OK sit on top of that table and are recognised from well known finger patterns.
+
+\section{Background and Motivation}
+Spoken language is the default channel in most public spaces. A person who cannot speak, or who is more comfortable with signed communication, is often left waiting for a human interpreter. Public sign-recognition samples exist, but many of them stop at the alphabet, depend on an outdated MediaPipe API, change the label on every frame, or send text to a paid online speech service. Those limits make the samples hard to run in a classroom viva and hard to defend as original student work.
+
+A practical college prototype therefore needs to run on an ordinary laptop, produce a word that can be shown and spoken in real time, stay offline, and remain simple enough to explain. GestureTalk is motivated by that accessibility gap and by those engineering constraints. It does not attempt to model the grammar or facial markers of a natural sign language. It tries to close a smaller loop: one hand, one stable word, one spoken sentence.
+
+\section{Problem Statement}
+Given a live webcam image of a single hand, the system must produce a stable English label and speak that label locally. The label should not flicker every time a fingertip crosses a threshold. Speech should not block the camera thread. The implementation should use a current hand-tracking API and original application code. The problem is therefore not ``solve sign language'' in the linguistic sense. The problem is to build a complete, honest, real-time path from camera to text and speech, with a large enough vocabulary that the demonstration is useful.
+
+\section{Objectives}
+The first objective is to capture a webcam frame, mirror it for a natural selfie view, and extract twenty-one hand landmarks. The second is to classify a custom vocabulary of more than five hundred gestures from finger extension, hand orientation and corrected handedness. The third is to keep the overlay stable using per-finger hysteresis, a short majority window and hold-to-confirm. The fourth is to speak each newly confirmed gesture once, offline, without waiting for audio to finish. The fifth is to keep the code modular so that a trained model can replace the rule table in a later stage without rewriting the camera loop.
+
+\section{Scope}
+The current scope is a single-user Windows application with one webcam and one hand. It covers tracking, custom pose classification, smoothing, on-screen text and interruptible speech. It does not cover two-handed motion, facial expression, or the grammar of American Sign Language or Indian Sign Language. PyTorch and scikit-learn are present in the environment for later training. The running demonstration uses landmark geometry. Later expansion includes per-person landmark collection, a multilayer perceptron, a CustomTkinter interface and ONNX export.
+
+\section{Significance}
+For a user in a demonstration setting, a pose can produce both text and voice without an interpreter standing nearby. For engineering, tracking, classification, confirmation and speech sit in separate modules, so each part can be tested and replaced. For academic honesty, the limits are stated in this report. The vocabulary is custom. Natural sign language accuracy is not claimed. The trained-model stage remains future work.
+
+\section{Organisation of the Report}
+Chapter~2 reviews related student and research work and records the gaps that this prototype tries to fill. Chapter~3 states functional and non-functional requirements. Chapter~4 describes architecture, data flow and module design. Chapter~5 explains the implementation of tracking, classification and speech. Chapter~6 presents screenshots and test observations. Chapter~7 concludes the work and lists future scope.
