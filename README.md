@@ -1,3 +1,31 @@
+<!-- mg-header -->
+<p align="center">
+  <img src=".github/banner.svg" alt="Local-sign-language banner" width="100%" />
+</p>
+
+<p align="center">
+  <img src="https://img.shields.io/badge/Python-3776AB?style=for-the-badge&logo=python&logoColor=white" alt="Python" />
+  <img src="https://img.shields.io/badge/OpenCV-5C3EE8?style=for-the-badge&logo=opencv&logoColor=white" alt="OpenCV" />
+  <img src="https://img.shields.io/badge/MediaPipe-0097A7?style=for-the-badge&logo=google&logoColor=white" alt="MediaPipe" />
+  <img src="https://img.shields.io/badge/PyTest-0A9EDC?style=for-the-badge&logo=pytest&logoColor=white" alt="PyTest" />
+</p>
+
+<p align="center">
+  <a href="https://mohitgora950.github.io"><b>🌐 Portfolio</b></a> · <a href="https://github.com/mohitgora950"><b>👤 More projects</b></a> · <a href="https://www.linkedin.com/in/mohit-goraaaa1234/"><b>💼 LinkedIn</b></a> · <a href="mailto:mohitgora950@gmail.com"><b>📫 Hire me</b></a>
+</p>
+
+> **TL;DR:** Recognises hand gestures from a webcam in **real time**, shows them as text and **speaks them aloud**, all offline. Pipeline: OpenCV → MediaPipe HandLandmarker (21 landmarks) → orientation-aware classifier with hysteresis smoothing → background text-to-speech.
+
+### 📸 Screenshots
+
+<table>
+<tr><td align="center" width="50%"><img src="screenshots/sign_language.png" alt="Live gesture recognition" width="100%" /><br /><sub><b>Live gesture recognition</b></sub></td><td align="center" width="50%"><img src="screenshots/Hand_detection.png" alt="Hand landmark detection" width="100%" /><br /><sub><b>Hand landmark detection</b></sub></td></tr>
+<tr><td align="center" width="50%"><img src="screenshots/more_gestures.png" alt="More gestures" width="100%" /><br /><sub><b>More gestures</b></sub></td><td align="center" width="50%"><img src="screenshots/when_no_hand.png" alt="No hand in frame" width="100%" /><br /><sub><b>No hand in frame</b></sub></td></tr>
+</table>
+
+---
+<!-- /mg-header -->
+
 # Sign Language Translator
 
 Real-time sign gesture recognition from webcam, shown as text and spoken aloud.
